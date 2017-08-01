@@ -1,0 +1,16 @@
+<button ion-button block (click)="googleLogin()" *ngIf="!userProfile">
+  GOOGLE LOGIN - 2
+</button>
+
+<button color="danger" ion-button block (click)="googleLogout()" *ngIf="userProfile">
+  SIGN OUT
+</button>
+
+<ion-card *ngIf="userProfile">
+  <ion-card-header>
+    {{ userProfile.email }}
+  </ion-card-header>
+  <ion-card-content>
+    {{ userProfile | json }}
+  </ion-card-content>
+</ion-card>
