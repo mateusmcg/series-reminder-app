@@ -30,9 +30,6 @@ export class AuthProvider {
   googleSignIn(): firebase.Promise<any> {
     if (this.platform.is('cordova')) {
       return firebase.auth().signInWithRedirect(this.googleProvider);
-      // .then(() => {
-      //   return firebase.auth().getRedirectResult();
-      // });
     } else {
       return firebase.auth().signInWithPopup(this.googleProvider);
     }

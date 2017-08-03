@@ -16,9 +16,11 @@ import { IonicPage } from 'ionic-angular';
 export class TabsPage {
 
   tab1Root: string;
+  tab2Root: string;
 
   constructor() {
     this.tab1Root = 'ProfilePage';
+    this.tab2Root = 'TestPage';
   }
 
 }
