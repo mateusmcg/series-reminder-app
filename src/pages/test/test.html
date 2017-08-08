@@ -17,5 +17,12 @@
   <p> Gêneros de filmes: {{ movieGenres | json }}</p>
   <p> Gêneros de séries: {{ showGenres | json }}</p>
   <hr>
-  <p> Top Filmes do Momento: {{ trendingMovies | json }}
+  <p> Top Filmes do Momento: {{ trendingMovies | json }}</p>
+  <p> Filme específico: {{ movie | json }}</p>
+  <hr>
+  <p> Elenco: {{ cast | json }}</p>
+  <hr>
+  <p> Notas: {{ rating | json }}</p>
+  <p> Filmes relacionados: {{ relatedMovies | json }}</p>
+  <p> Stats do Filme: {{ movieStats | json }}</p>
 </ion-content>

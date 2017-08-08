@@ -5,6 +5,9 @@ import { TraktTvProvider } from '../../providers/trakt-tv/trakt-tv';
 import { GenreEnum, Genre } from "../../models/genre";
 import { TrendingMovie } from "../../models/trending-movie";
 import { Movie } from "../../models/movie";
+import { Cast } from "../../models/cast";
+import { Rating } from "../../models/rating";
+import { MovieStats } from "../../models/movie-stats";
 
 @IonicPage()
 @Component({
@@ -17,6 +20,11 @@ export class TestPage {
   protected showGenres: Genre[];
   protected trendingMovies: TrendingMovie[];
   protected popularMovies: Movie[];
+  protected movie: Movie;
+  protected cast: Cast[];
+  protected rating: Rating;
+  protected relatedMovies: Movie[];
+  protected movieStats: MovieStats;
 
   constructor(private traktTv: TraktTvProvider) {
     this.traktTv.getGenres(GenreEnum.Movies).subscribe((movieGenres) => {
@@ -37,6 +45,31 @@ export class TestPage {
     this.traktTv.getPopularMovies().subscribe((popularMovies) => {
       console.log('Subscrito com a lista de filmes populares');
       this.popularMovies = popularMovies;
+    });
+
+    this.traktTv.getMovie(1).subscribe((movie) => {
+      console.log('Subscrito a um filme específico');
+      this.movie = movie;
+    });
+
+    this.traktTv.getMovieCast(1).subscribe((cast) => {
+      console.log('Subscrito ao elenco de um filme');
+      this.cast = cast;
+    });
+
+    this.traktTv.getMovieRating(1).subscribe((rating) => {
+      console.log('Subscrito à nota de um filme');
+      this.rating = rating;
+    });
+
+    this.traktTv.getRelatedMovies(1).subscribe((relatedMovies) => {
+      console.log('Subscrito ao filmes relacionados');
+      this.relatedMovies = relatedMovies;
+    });
+
+    this.traktTv.getMovieStats(1).subscribe((stats) => {
+      console.log('Subscrito aos stats do filme');
+      this.movieStats = stats;
     });
   }
 

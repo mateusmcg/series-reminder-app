@@ -11,6 +11,9 @@ import { TRAKT_TV_CONFIGS } from './trakt-tv.config';
 import { Genre, GenreEnum } from '../../models/genre';
 import { TrendingMovie } from "../../models/trending-movie";
 import { Movie } from "../../models/movie";
+import { Cast } from "../../models/cast";
+import { Rating } from "../../models/rating";
+import { MovieStats } from "../../models/movie-stats";
 
 /*
   Generated class for the TraktTvProvider provider.
@@ -25,6 +28,7 @@ export class TraktTvProvider {
   private genreURI: string;
   private trendingURI: string;
   private popularURI: string;
+  private movieURI: string;
 
   constructor(private http: Http) {
     this.headers = new Headers();
@@ -35,6 +39,7 @@ export class TraktTvProvider {
     this.genreURI = "genres/{type}";
     this.trendingURI = "{type}/trending";
     this.popularURI = "{type}/popular";
+    this.movieURI = "movies/{id}";
   }
 
   getGenres(type: GenreEnum): Observable<Genre[]> {
@@ -61,6 +66,56 @@ export class TraktTvProvider {
     var uri = this.popularURI.replace("{type}", "movies");
 
     return this.http.get(`${TRAKT_TV_CONFIGS.baseURL}/${uri}`, { headers: this.headers })
+      .do(this.logData)
+      .map(this.extractData)
+      .do(this.logData)
+      .catch(this.handleError)
+  }
+
+  getMovie(id: number): Observable<Movie> {
+    var uri = this.movieURI.replace("{id}", id.toString());
+
+    return this.http.get(`${TRAKT_TV_CONFIGS.baseURL}/${uri}`, { headers: this.headers })
+      .do(this.logData)
+      .map(this.extractData)
+      .do(this.logData)
+      .catch(this.handleError)
+  }
+
+  getMovieCast(id: number): Observable<Cast[]> {
+    var uri = this.movieURI.replace("{id}", id.toString());
+
+    return this.http.get(`${TRAKT_TV_CONFIGS.baseURL}/${uri}/people`, { headers: this.headers })
+      .do(this.logData)
+      .map((response) => { return response.json().cast })
+      .do(this.logData)
+      .catch(this.handleError)
+  }
+
+  getMovieRating(id: number): Observable<Rating> {
+    var uri = this.movieURI.replace("{id}", id.toString());
+
+    return this.http.get(`${TRAKT_TV_CONFIGS.baseURL}/${uri}/ratings`, { headers: this.headers })
+      .do(this.logData)
+      .map(this.extractData)
+      .do(this.logData)
+      .catch(this.handleError)
+  }
+
+  getRelatedMovies(id: number): Observable<Movie[]> {
+    var uri = this.movieURI.replace("{id}", id.toString());
+
+    return this.http.get(`${TRAKT_TV_CONFIGS.baseURL}/${uri}/related`, { headers: this.headers })
+      .do(this.logData)
+      .map(this.extractData)
+      .do(this.logData)
+      .catch(this.handleError)
+  }
+
+  getMovieStats(id: number): Observable<MovieStats> {
+    var uri = this.movieURI.replace("{id}", id.toString());
+
+    return this.http.get(`${TRAKT_TV_CONFIGS.baseURL}/${uri}/stats`, { headers: this.headers })
       .do(this.logData)
       .map(this.extractData)
       .do(this.logData)
