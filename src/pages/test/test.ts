@@ -8,6 +8,7 @@ import { Movie } from "../../models/movie";
 import { Cast } from "../../models/cast";
 import { Rating } from "../../models/rating";
 import { MovieStats } from "../../models/movie-stats";
+import { SearchTypeEnum, Search, SearchTypeIdEnum } from "../../models/search";
 
 @IonicPage()
 @Component({
@@ -25,6 +26,8 @@ export class TestPage {
   protected rating: Rating;
   protected relatedMovies: Movie[];
   protected movieStats: MovieStats;
+  protected search: Search[];
+  protected searchItem: Search;
 
   constructor(private traktTv: TraktTvProvider) {
     this.traktTv.getGenres(GenreEnum.Movies).subscribe((movieGenres) => {
@@ -70,6 +73,16 @@ export class TestPage {
     this.traktTv.getMovieStats(1).subscribe((stats) => {
       console.log('Subscrito aos stats do filme');
       this.movieStats = stats;
+    });
+
+    this.traktTv.search([SearchTypeEnum.Movie, SearchTypeEnum.Show], "mentalist").subscribe((search) => {
+      console.log('Subscrito à busca', search);
+      this.search = search;
+    });
+
+    this.traktTv.searchById(SearchTypeIdEnum.Trakt, 12601, SearchTypeEnum.Movie).subscribe((searchItem) => {
+      console.log('Subscrito à busca', searchItem);
+      this.searchItem = searchItem;
     });
   }
 

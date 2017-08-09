@@ -14,6 +14,7 @@ import { Movie } from "../../models/movie";
 import { Cast } from "../../models/cast";
 import { Rating } from "../../models/rating";
 import { MovieStats } from "../../models/movie-stats";
+import { SearchTypeEnum, Search, SearchTypeIdEnum } from "../../models/search";
 
 /*
   Generated class for the TraktTvProvider provider.
@@ -29,6 +30,8 @@ export class TraktTvProvider {
   private trendingURI: string;
   private popularURI: string;
   private movieURI: string;
+  private searchURI: string;
+  private searchByIdURI: string;
 
   constructor(private http: Http) {
     this.headers = new Headers();
@@ -40,6 +43,21 @@ export class TraktTvProvider {
     this.trendingURI = "{type}/trending";
     this.popularURI = "{type}/popular";
     this.movieURI = "movies/{id}";
+    this.searchURI = "search/{type}?query={query}";
+    this.searchByIdURI = "search/{id_type}/{id}?type={type}";
+  }
+
+  private handleError(error: Response | any) {
+    console.log("Erro: ", error);
+    return Observable.throw(error.json().error || "Server error.");
+  }
+
+  private extractData<T>(response: Response): T {
+    return response.json() as T;
+  }
+
+  private logData(response: any) {
+    console.log(response);
   }
 
   getGenres(type: GenreEnum): Observable<Genre[]> {
@@ -122,17 +140,31 @@ export class TraktTvProvider {
       .catch(this.handleError)
   }
 
-  private handleError(error: Response | any) {
-    console.log("Erro: ", error);
-    return Observable.throw(error.json().error || "Server error.");
+  search(types: SearchTypeEnum[], query: string): Observable<Search[]> {
+    var strTypes = types.map((type) => { return SearchTypeEnum[type].toString().toLowerCase() }).join(",");
+    var uri = this.searchURI.replace("{type}", strTypes).replace("{query}", query);
+
+    return this.http.get(`${TRAKT_TV_CONFIGS.baseURL}/${uri}`, { headers: this.headers })
+      .do(this.logData)
+      .map((searchResult) => {
+        return searchResult.json().map((search) => {
+          return new Search(search.type, search.score, (search.movie || search.show || search.person || search.episode || search.list));
+        });
+      }).do(this.logData)
+      .catch(this.handleError);
   }
 
-  private extractData(response: Response) {
-    return response.json();
-  }
+  searchById(idType: SearchTypeIdEnum, id: string | number, type: SearchTypeEnum): Observable<Search> {
+    var uri = this.searchByIdURI.replace("{id_type}", SearchTypeIdEnum[idType].toString().toLowerCase()).replace("{id}", id.toString()).replace("{type}", SearchTypeEnum[type].toString().toLowerCase());
 
-  private logData(response: Response) {
-    console.log(response);
+    return this.http.get(`${TRAKT_TV_CONFIGS.baseURL}/${uri}`, { headers: this.headers })
+      .do(this.logData)
+      .map((response) => {
+        var search = response.json()[0];
+        return new Search(search.type, search.score, (search.movie || search.show || search.person || search.episode || search.list));
+      })
+      .do(this.logData)
+      .catch(this.handleError)
   }
 
 }
