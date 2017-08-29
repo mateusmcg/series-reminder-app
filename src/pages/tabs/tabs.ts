@@ -17,10 +17,18 @@ export class TabsPage {
 
   tab1Root: string;
   tab2Root: string;
+  tab3Root: string;
+  tab4Root: string;
+  tab5Root: string;
+  tab6Root: string;
 
   constructor() {
-    this.tab1Root = 'ProfilePage';
-    this.tab2Root = 'TestPage';
+    this.tab1Root = 'MyShowsPage';
+    this.tab2Root = 'MyMoviesPage';
+    this.tab3Root = 'SearchPage'
+    this.tab4Root = 'ProfilePage';
+    this.tab5Root = 'SettingsPage';
+    this.tab6Root = 'TestPage';
   }
 
 }
